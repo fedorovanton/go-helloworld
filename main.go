@@ -1,246 +1,66 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"helloworld/shape"
-	"net/http"
-	"strings"
+	"learn/examples"
 )
 
 func main() {
-	// Обработка возникающих panic
-	defer handlerPanic()
+	fmt.Println("Start learn...")
 
-	println("Привет Ева")
+	fmt.Println("=== 1.Variables BEGIN ===")
+	examples.RunVariables()
+	fmt.Println("=== 1.Variables END ===")
 
-	var number, secondNumber int
-	number = 10
-	println(number)
-	secondNumber = 15
-	println(secondNumber)
-	c := "Строка"
-	println(c)
+	fmt.Println("=== 2.If BEGIN ===")
+	examples.RunIf(10, 15)
+	fmt.Println("=== 2.If END ===")
 
-	// Условие if
-	if number < secondNumber {
-		println("первое число меньше второго")
-	} else if number > secondNumber {
-		println("второе число меньше первого")
-	} else {
-		println("числа равны")
-	}
+	fmt.Println("=== 3.Switch BEGIN ===")
+	examples.RunSwitch(15)
+	fmt.Println("=== 3.Switch END ===")
 
-	// Условие switch
-	switch number {
-	case 10:
-		println("число =10")
-	case 15:
-		println("число =15")
-	}
+	fmt.Println("=== 4.For BEGIN ===")
+	examples.RunFor(5, 7)
+	fmt.Println("=== 4.For END ===")
 
-	// Цикл for
-	for i := 1; i <= 10; i++ {
-		println(i)
-	}
+	defer runDefer()
 
-	// Цикл for без объявления начального инкремента
-	for number < secondNumber {
-		number = number + 1
+	fmt.Println("=== 6.Array BEGIN ===")
+	examples.RunArray()
+	fmt.Println("=== 6.Array END ===")
 
-		println(number)
-	}
+	fmt.Println("=== 7.Slice BEGIN ===")
+	examples.RunSlice()
+	fmt.Println("=== 7.Slice END ===")
 
-	// Цикл for с break
-	i := 0
-	for {
-		println("Бесконечный цикл")
-		if i == 10 {
-			break
-		}
-		i++
-	}
+	fmt.Println("=== 8.Function BEGIN ===")
+	examples.RunFunction()
+	fmt.Println("=== 8.Function END ===")
 
-	// Массив1
-	// var numbers[3] int
-	// numbers[0] = 10
-	// numbers[1] = 11
-	// numbers[2] = 12
+	fmt.Println("=== 9.ErrorAndPanic BEGIN ===")
+	// examples.RunErrorAndPanic()
+	fmt.Println("=== 9.ErrorAndPanic END ===")
 
-	// Массив2
-	// var numbers [3]int = [3]int{10, 11, 12}
+	fmt.Println("=== 10.Pointers BEGIN ===")
+	examples.RunPointers()
+	fmt.Println("=== 10.Pointers END ===")
 
-	// Массив3
-	// numbers := [3]int{10, 11, 12}
+	fmt.Println("=== 11.WebServer BEGIN ===")
+	// examples.RunWebServer()
+	fmt.Println("=== 11.WebServer END ===")
 
-	// Слайс
-	// numbers := []int{10, 11, 12}
-	numbers := make([]int, 1)
-	fmt.Println(numbers)
-	fmt.Println(len(numbers))
-	fmt.Println(cap(numbers))
-	numbers = append(numbers, 13) // добавление одного элемента
-	fmt.Println(numbers)
-	fmt.Println(len(numbers))
-	fmt.Println(cap(numbers))
-	numbers = append(numbers, 14, 15) // добавление двух элементов
-	fmt.Println(numbers)
-	fmt.Println(len(numbers))
-	fmt.Println(cap(numbers))
+	fmt.Println("=== 12.Struct BEGIN ===")
+	examples.RunStruct()
+	fmt.Println("=== 12.Struct END ===")
 
-	messages := []string{
-		"message 1",
-		"message 2",
-		"message 3",
-		"message 4",
-	}
-	for i := range messages {
-		fmt.Println(messages[i])
-	}
-
-	// Функция с 1 возвращаемым значением
-	sum := Sum(1, 2)
-	println(sum) // 3
-
-	// Функция с 2 возвращаемыми значениями
-	sum, division := SumAndDivide(4, 2)
-	println(sum)      // 6
-	println(division) // 2
-
-	// Отложенный вызов функции (после main())
-	defer printMessageLast()
-
-	// Функция с 2 возвращаемым значением (результат и error)
-	// res, err := has18Age(17)
-	res, err := has18Age(19)
-	if err != nil {
-		fmt.Println(err)
-
-		panic("Опачки! Ошибочка")
-	} else {
-		fmt.Println(res)
-	}
-
-	upper := strings.ToUpper("заглавные буквы")
-	println(upper) // Output: ЗАГЛАВНЫЕ БУКВЫ
-
-	// Ссылки, указатели (работа с памятью)
-	message := "Скоро я стану ниндзя!"
-	println(message)
-	changeMessage(&message)
-	println(message)
-
-	// Мапэ (map)
-	users := map[string]int{
-		"Ivanov":  10,
-		"Sidorov": 15,
-		"Petrov":  20,
-	}
-	// users := make(map[string]int)
-	fmt.Println(users)
-	age, exists := users["Ivanov"]
-	if exists {
-		fmt.Println(age)
-	} else {
-		fmt.Println("Ivanov нет в списке")
-	}
-	users["Seregov"] = 25
-	delete(users, "Petrov")
-	for key, value := range users {
-		fmt.Println(key, value)
-	}
-
-	// Web Server
-	// http.HandleFunc("/", HelloWeb)
-	// err := http.ListenAndServe("localhost:9999", nil)
-	// if err != nil {
-	// 	log.Println("listen and serve:", err)
-	// }
-
-	// Работа со структурами (struct)
-	user1 := constructUser("Vasya", "Male", 23, 75, 185)
-	user2 := User{"Petya", 29, "Male", 83, 180}
-	fmt.Printf("%+v\n", user1)
-	user1.printUserInfo()
-	user2.setAgeUser(99)
-	user2.printUserInfo()
-
-	// Работа с интерфейсами
-	square := shape.NewSquare(5)
-	// circle := Circle{8}
-	shape.PrintShapeArea(square)
-	// printShapeArea(circle)
-
-	shape.PrintInterface(square)
-	// printInterface(circle)
+	fmt.Println("=== 13.Interface BEGIN ===")
+	examples.RunInterface()
+	fmt.Println("=== 13.Interface END ===")
 }
 
-func constructUser(name, sex string, age Age, weight, height int) User {
-	return User{
-		name:   name,
-		sex:    sex,
-		age:    Age(age),
-		weight: weight,
-		height: height,
-	}
-}
-
-// (u User) - это ресивер (reciever) структуры (User) для метода printUserInfo
-func (u User) printUserInfo() {
-	fmt.Println(u.name, u.age, u.sex, u.weight, u.height)
-}
-
-// (u User) - это поинт ресивер (point reciever) структуры (User) для метода printUserInfo
-func (u *User) setAgeUser(age Age) {
-	u.age = age
-}
-
-type User struct {
-	name   string
-	age    Age
-	sex    string
-	weight int
-	height int
-}
-
-type Age int
-
-func (a Age) isAdult() bool {
-	return a >= 18
-}
-
-func changeMessage(message *string) {
-	*message += " (из функции printMessage())"
-}
-
-func Sum(a, b int) int {
-	return a + b
-}
-
-func SumAndDivide(a, b int) (int, int) {
-	return a + b, a / b
-}
-
-func has18Age(age Age) (string, error) {
-	if age < 18 {
-		return "", errors.New("error: Еще не имеет 18 лет!")
-	}
-
-	return "Все ОК", nil
-}
-
-func HelloWeb(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello Web!"))
-}
-
-func printMessageLast() {
+func runDefer() {
+	fmt.Println("=== 5.Defer BEGIN ===")
 	fmt.Println("Эта функция сработала в конце, хотя ее вызвали в середине")
+	fmt.Println("=== 5.Defer END ===")
 }
-
-func handlerPanic() {
-	if r := recover(); r != nil {
-		fmt.Println(r)
-	}
-}
-
-// @see https://youtu.be/h0zxh2TPN_I?t=10240

@@ -1,4 +1,4 @@
-package shape
+package examples
 
 import (
 	"fmt"
@@ -6,14 +6,11 @@ import (
 )
 
 type Shape interface {
-	// Area() float32
-
 	// Композиция интерфейсов
 	ShapeWithArea
 	ShapeWithPerimeter
 }
 
-// Композиция интерфейса
 type ShapeWithArea interface {
 	Area() float32
 }
@@ -26,10 +23,8 @@ type Square struct {
 	sideLength float32
 }
 
-func NewSquare(length float32) Square {
-	return Square{
-		sideLength: length,
-	}
+func PrintShapeArea(shape Shape) {
+	fmt.Println(shape.Area())
 }
 
 func (s Square) Area() float32 {
@@ -40,6 +35,12 @@ func (s Square) Perimeter() float32 {
 	return s.sideLength * 4
 }
 
+func NewSquare(length float32) Square {
+	return Square{
+		sideLength: length,
+	}
+}
+
 type Circle struct {
 	radius float32
 }
@@ -48,8 +49,14 @@ func (c Circle) Area() float32 {
 	return c.radius * c.radius * math.Pi
 }
 
-func PrintShapeArea(shape Shape) {
-	fmt.Println(shape.Area())
+func (c Circle) Perimeter() float32 {
+	return 2 * math.Pi * c.radius
+}
+
+func NewCircle(radius float32) Circle {
+	return Circle{
+		radius: radius,
+	}
 }
 
 func PrintInterface(i interface{}) {
@@ -73,4 +80,15 @@ func PrintInterface(i interface{}) {
 	}
 
 	fmt.Printf("%+v\n", i)
+}
+
+func RunInterface() {
+	// Работа с интерфейсами
+	square := NewSquare(5)
+	PrintShapeArea(square)
+	PrintInterface(square)
+
+	circle := NewCircle(8)
+	PrintShapeArea(circle)
+	PrintShapeArea(circle)
 }
